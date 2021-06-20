@@ -1,5 +1,6 @@
 package uk.enfa.honkers;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -7,8 +8,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -47,6 +51,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         updateTimeline();
         super.onResume();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch(id){
+            case R.id.logout:
+                SharedPreferences.Editor editor = getSharedPreferences("uk.enfa.honkers", MODE_PRIVATE).edit();
+                editor.remove("token");
+                editor.remove("username");
+                editor.remove("nickname");
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     void updateTimeline(){

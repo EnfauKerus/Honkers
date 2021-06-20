@@ -2,6 +2,7 @@ package uk.enfa.honkers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -28,7 +32,9 @@ public class PostReplyAdapter extends RecyclerView.Adapter<PostReplyAdapter.View
     private JSONArray localDataSet;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        private JSONObject localJson;
         private long id;
+        private View view;
         private final ImageView avatar;
         private final TextView nickname;
         private final TextView username;
@@ -37,6 +43,7 @@ public class PostReplyAdapter extends RecyclerView.Adapter<PostReplyAdapter.View
 
         public ViewHolder(View view){
             super(view);
+            this.view = view;
             avatar = view.findViewById(R.id.imageViewPostReplyAvatar);
             nickname = view.findViewById(R.id.textViewPostReplyNickname);
             username = view.findViewById(R.id.textViewPostReplyUsername);
@@ -45,6 +52,7 @@ public class PostReplyAdapter extends RecyclerView.Adapter<PostReplyAdapter.View
         }
 
         public void setContent(JSONObject json) throws JSONException {
+            localJson = json;
             id = json.getLong("id");
             username.setText("@" + json.getString("username"));
             nickname.setText(json.getString("nickname"));
@@ -59,7 +67,25 @@ public class PostReplyAdapter extends RecyclerView.Adapter<PostReplyAdapter.View
                 e.printStackTrace();
             }
 
+            String avatarUrl = view.getResources().getString(R.string.api_endpoint)+ String.format("/user/%s/avatar", json.getString("username"));
 
+            AppController.getInstance().getImageLoader().get(avatarUrl, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    avatar.setImageDrawable(new BitmapDrawable(view.getResources(), response.getBitmap()));
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    avatar.setImageResource(R.drawable.ic_honker_user);
+                }
+            });
+            view.setOnClickListener( v -> {
+                Context ctx = view.getContext();
+                Intent intent = new Intent(ctx, ShowPostActivity.class);
+                intent.putExtra("json", localJson.toString());
+                ctx.startActivity(intent);
+            });
         }
 
 

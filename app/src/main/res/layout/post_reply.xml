@@ -62,4 +62,9 @@
         app:layout_constraintStart_toEndOf="@+id/textViewPostReplyNickname"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

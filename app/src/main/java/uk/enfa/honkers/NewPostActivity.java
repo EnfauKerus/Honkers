@@ -32,9 +32,13 @@ public class NewPostActivity extends AppCompatActivity {
         binding = ActivityNewPostBinding.inflate(getLayoutInflater());
         super.onCreate(savedInstanceState);
         setContentView(binding.getRoot());
+
         getSupportActionBar().setTitle("New honk");
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getIntent().hasExtra("reply_to")){
+            getSupportActionBar().setTitle("Reply to post");
+        }
     }
 
     @Override
@@ -64,8 +68,14 @@ public class NewPostActivity extends AppCompatActivity {
 
     private void submitPost(){
 
+
         String jwt = getSharedPreferences("uk.enfa.honkers", MODE_PRIVATE).getString("token", "null");
         String url = getResources().getString(R.string.api_endpoint)+"/timeline/post";
+        if(getIntent().hasExtra("reply_to")){
+            url = getResources().getString(R.string.api_endpoint)+
+                    String.format("/timeline/%d/responses",
+                            getIntent().getLongExtra("reply_to", 0));
+        }
         JSONObject json = new JSONObject();
         try {
             json.put("content", binding.editTextTextMultiLine.getText().toString());

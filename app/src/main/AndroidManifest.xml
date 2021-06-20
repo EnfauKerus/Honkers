@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Honkers">
-        <activity android:name=".NewPostActivity"></activity>
+        <activity android:name=".UserSettingsActivity"></activity>
+        <activity android:name=".NewPostActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".ShowPostActivity" />
         <activity android:name=".LoginActivity" />
