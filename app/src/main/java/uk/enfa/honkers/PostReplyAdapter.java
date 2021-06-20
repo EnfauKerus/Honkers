@@ -2,7 +2,6 @@ package uk.enfa.honkers;
 
 import android.content.Context;
 import android.content.Intent;
-import android.icu.text.TimeZoneNames;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +20,10 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
+public class PostReplyAdapter extends RecyclerView.Adapter<PostReplyAdapter.ViewHolder> {
 
     private JSONArray localDataSet;
 
@@ -36,24 +34,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         private final TextView username;
         private final TextView timestamp;
         private final TextView content;
-        private final Button buttonFav;
-        private final Button buttonComment;
+
         public ViewHolder(View view){
             super(view);
-            avatar = view.findViewById(R.id.imageViewPostAvatar);
-            nickname = view.findViewById(R.id.textViewPostNickname);
-            username = view.findViewById(R.id.textViewPostUsername);
-            timestamp = view.findViewById(R.id.textViewPostTimestamp);
-            content = view.findViewById(R.id.textViewPostContent);
-            buttonFav = view.findViewById(R.id.buttonFav);
-            buttonComment = view.findViewById(R.id.buttonComment);
-            buttonComment.setOnClickListener( v -> {
-                Context ctx = view.getContext();
-                Intent intent = new Intent(ctx, ShowPostActivity.class);
-                intent.putExtra("id", id);
-                intent.putExtra("nickname", nickname.getText());
-                ctx.startActivity(intent);
-            });
+            avatar = view.findViewById(R.id.imageViewPostReplyAvatar);
+            nickname = view.findViewById(R.id.textViewPostReplyNickname);
+            username = view.findViewById(R.id.textViewPostReplyUsername);
+            timestamp = view.findViewById(R.id.textViewPostReplyTimestamp);
+            content = view.findViewById(R.id.textViewPostReplyContent);
         }
 
         public void setContent(JSONObject json) throws JSONException {
@@ -61,8 +49,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             username.setText("@" + json.getString("username"));
             nickname.setText(json.getString("nickname"));
             content.setText(json.getString("content"));
-            buttonFav.setText(json.getString("fav_count"));
-            buttonComment.setText(json.getString("replies_count"));
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             df.setTimeZone(TimeZone.getTimeZone("UTC"));
             try {
@@ -79,7 +65,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     }
 
-    public PostAdapter(JSONArray dataSet) {
+    public PostReplyAdapter(JSONArray dataSet) {
         localDataSet = dataSet;
     }
 
@@ -87,7 +73,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     @NotNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.post_main, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.post_reply, parent, false);
         return new ViewHolder(view);
     }
 

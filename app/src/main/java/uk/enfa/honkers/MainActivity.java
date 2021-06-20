@@ -3,6 +3,7 @@ package uk.enfa.honkers;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.Intent;
@@ -35,7 +36,11 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         super.onCreate(savedInstanceState);
         setContentView(binding.getRoot());
-
+        binding.floatingActionButton.setOnClickListener( v -> {
+            Intent intent = new Intent(this, NewPostActivity.class);
+            startActivity(intent);
+        });
+        binding.swipe.setOnRefreshListener(this::updateTimeline);
     }
 
     @Override
@@ -45,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void updateTimeline(){
+        binding.swipe.setRefreshing(true);
         String jwt = getSharedPreferences("uk.enfa.honkers", MODE_PRIVATE).getString("token", "null");
         Log.d("main", "token: " + jwt);
         AppController.getInstance().addToRequestQueue(new JsonObjectRequest(Request.Method.GET, getResources().getString(R.string.api_endpoint)+"/timeline/following", null, this::onTimelineReceived, this::onErrorResponse){
@@ -60,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void onTimelineReceived(JSONObject response){
+        binding.swipe.setRefreshing(false);
         try {
             JSONArray timeline = response.getJSONArray("timeline");
             PostAdapter pa = new PostAdapter(timeline);

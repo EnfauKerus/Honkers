@@ -23,7 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Nickname"
+        android:text="@{post.nickname}"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/imageViewPostAvatar"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,7 +33,7 @@
         android:id="@+id/textViewPostTimestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:text="2000-01-01 10:10:10"
         app:layout_constraintBottom_toTopOf="@+id/divider"
@@ -44,24 +45,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
-        android:text="Content"
+        android:text="@{post.content}"
+        android:textColor="?android:attr/textColorPrimary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewPostAvatar" />
 
-    <ImageButton
-        android:id="@+id/imageButtonFav"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#00FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider"
-        app:srcCompat="@drawable/ic_baseline_star_border_24" />
-
     <View
         android:id="@+id/divider"
-        android:layout_width="409dp"
+        android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
@@ -76,13 +67,12 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:drawableLeft="@drawable/ic_baseline_comment_24"
-        android:text="3"
+        android:text="@{post.replies_count}"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textColor="@android:color/darker_gray"
-        app:layout_constraintStart_toEndOf="@+id/imageButtonFav"
+        android:textColor="?android:attr/textColorSecondary"
+        app:layout_constraintStart_toEndOf="@+id/buttonFav"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <TextView
@@ -91,7 +81,28 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="@username"
+        android:text="@{post.username}"
         app:layout_constraintStart_toEndOf="@+id/imageViewPostAvatar"
         app:layout_constraintTop_toBottomOf="@+id/textViewPostNickname" />
+
+    <Button
+        android:id="@+id/buttonFav"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:drawableLeft="@drawable/ic_baseline_star_border_24"
+        android:text="@{post.fav_count}"
+        android:textColor="?android:attr/textColorSecondary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/buttonComment" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonFav" />
 </androidx.constraintlayout.widget.ConstraintLayout>
