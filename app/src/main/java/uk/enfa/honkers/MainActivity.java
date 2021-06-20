@@ -1,6 +1,8 @@
 package uk.enfa.honkers;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,13 +24,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import kotlin.jvm.internal.Intrinsics;
+import uk.enfa.honkers.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
-    RequestQueue queue;
+
+    ActivityMainBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(binding.getRoot());
 
     }
 
@@ -56,9 +62,12 @@ public class MainActivity extends AppCompatActivity {
     void onTimelineReceived(JSONObject response){
         try {
             JSONArray timeline = response.getJSONArray("timeline");
+            PostAdapter pa = new PostAdapter(timeline);
+            binding.recyclerTimeline.setLayoutManager(new LinearLayoutManager(this));
+            binding.recyclerTimeline.setAdapter(pa);
         } catch (JSONException e) {
             e.printStackTrace();
-            toast("Failed to parse timeline");
+            toast("Failed to parse timeline.");
         }
 
     }

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/imageViewPostAvatar"
+        android:id="@+id/imageViewPostReplyAvatar"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
@@ -17,7 +17,7 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/textViewPostNickname"
+        android:id="@+id/textViewPostReplyNickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -25,11 +25,11 @@
         android:contentDescription="Nickname"
         android:text="Nickname"
         android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@+id/imageViewPostAvatar"
+        app:layout_constraintStart_toEndOf="@+id/imageViewPostReplyAvatar"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textViewPostTimestamp"
+        android:id="@+id/textViewPostReplyTimestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -39,27 +39,27 @@
         android:text="2000-01-01 10:10:10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewPostAvatar" />
+        app:layout_constraintTop_toBottomOf="@+id/imageViewPostReplyAvatar" />
 
     <TextView
-        android:id="@+id/textViewPostContent"
+        android:id="@+id/textViewPostReplyContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:contentDescription="Content"
         android:text="Content"
-        app:layout_constraintStart_toEndOf="@+id/imageViewPostAvatar"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPostNickname" />
+        app:layout_constraintStart_toEndOf="@+id/imageViewPostReplyAvatar"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPostReplyNickname" />
 
     <TextView
-        android:id="@+id/textViewPostUsername"
+        android:id="@+id/textViewPostReplyUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:text="@username"
-        app:layout_constraintStart_toEndOf="@+id/textViewPostNickname"
+        app:layout_constraintStart_toEndOf="@+id/textViewPostReplyNickname"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

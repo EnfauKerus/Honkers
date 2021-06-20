@@ -1,12 +1,16 @@
 package uk.enfa.honkers;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -37,21 +41,38 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     void register(){
-        String baseURL = getResources().getString(R.string.api_endpoint);
-        JSONObject json = new JSONObject();
-        try {
-            json.put("username", binding.editTextUsername.getText().toString());
-            json.put("password", binding.editTextPassword.getText().toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, baseURL + "/auth/login", json, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                login();
-            }
-        }, this::onErrorResponse);
-        AppController.getInstance().addToRequestQueue(request, "register");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter your nickname");
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", (DialogInterface dialog, int which) -> {
+                String baseURL = getResources().getString(R.string.api_endpoint);
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("username", binding.editTextUsername.getText().toString());
+                    json.put("password", binding.editTextPassword.getText().toString());
+                    json.put("nickname", input.getText().toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                JsonObjectRequest request = new JsonObjectRequest(
+                        Request.Method.POST,
+                        baseURL + "/auth/register",
+                        json,
+                        (JSONObject response) -> {
+                        login();
+                    }
+                , this::onErrorResponse);
+                AppController.getInstance().addToRequestQueue(request, "register");
+            });
+
+        builder.setNegativeButton("Cancel", (DialogInterface dialog, int which) -> {
+                dialog.cancel();
+            });
+        builder.show();
     }
 
     void login(){
