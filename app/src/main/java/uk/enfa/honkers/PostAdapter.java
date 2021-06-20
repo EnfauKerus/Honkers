@@ -2,8 +2,11 @@ package uk.enfa.honkers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.icu.text.TimeZoneNames;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +14,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -27,6 +36,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
@@ -54,9 +65,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             content = view.findViewById(R.id.textViewPostContent);
             buttonFav = view.findViewById(R.id.buttonFav);
             buttonComment = view.findViewById(R.id.buttonComment);
-            buttonFav.setOnClickListener( v -> {
 
-            });
             buttonComment.setOnClickListener( v -> {
                 Context ctx = view.getContext();
                 Intent intent = new Intent(ctx, ShowPostActivity.class);
@@ -82,6 +91,82 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+
+
+            Context ctx = view.getContext();
+            String jwt = ctx.getSharedPreferences("uk.enfa.honkers", Context.MODE_PRIVATE).getString("token", "null");
+
+            AppController.getInstance().addToRequestQueue(new StringRequest(Request.Method.GET, ctx.getResources().getString(R.string.api_endpoint) + String.format("/fav/post/%d", id), new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    buttonFav.setTag(true);
+                    buttonFav.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_star_24, 0, 0, 0);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    buttonFav.setTag(false);
+                    buttonFav.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_star_border_24, 0, 0, 0);
+                }
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+
+                    headers.put("Authorization", "Bearer " + jwt);
+                    return headers;
+                }
+            });
+
+
+            buttonFav.setOnClickListener( v -> {
+
+                int method;
+                if((boolean)buttonFav.getTag()){
+                    method = Request.Method.DELETE;
+                }else{
+                    method = Request.Method.POST;
+                }
+                AppController.getInstance().addToRequestQueue(new StringRequest(method, ctx.getResources().getString(R.string.api_endpoint) + String.format("/fav/post/%d", id),  new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        int favCount = Integer.parseInt(buttonFav.getText().toString());
+                        if((boolean)buttonFav.getTag()){
+                            buttonFav.setTag(false);
+                            favCount--;
+                            buttonFav.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_star_border_24, 0, 0, 0);
+                        }else{
+                            buttonFav.setTag(true);
+                            favCount++;
+                            buttonFav.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_star_24, 0, 0, 0);
+                        }
+                        buttonFav.setText(String.valueOf(favCount));
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }){
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        HashMap<String, String> headers = new HashMap<String, String>();
+
+                        headers.put("Authorization", "Bearer " + jwt);
+                        return headers;
+                    }
+                });
+            });
+
+            avatar.setOnClickListener( v -> {
+                Intent profile = new Intent(ctx, ProfileActivity.class);
+                try {
+                    profile.putExtra("username", json.getString("username"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                ctx.startActivity(profile);
+            });
 
             String avatarUrl = view.getResources().getString(R.string.api_endpoint)+ String.format("/user/%s/avatar", json.getString("username"));
 

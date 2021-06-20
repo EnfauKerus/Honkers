@@ -63,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         switch(id){
+            case R.id.settings:
+                Intent settings = new Intent(this, UserSettingsActivity.class);
+                startActivity(settings);
+                break;
             case R.id.logout:
                 SharedPreferences.Editor editor = getSharedPreferences("uk.enfa.honkers", MODE_PRIVATE).edit();
                 editor.remove("token");
