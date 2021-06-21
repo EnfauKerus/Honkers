@@ -51,9 +51,17 @@ public class ShowPostActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         binding.floatingActionButtonReply.setOnClickListener( v -> {
-            Intent intent = new Intent(this, NewPostActivity.class);
-            intent.putExtra("reply_to", getIntent().getLongExtra("id", 0));
-            startActivity(intent);
+
+            try {
+                JSONObject json = new JSONObject(getIntent().getStringExtra("json"));
+                long id = json.getInt("id");
+                Intent intent = new Intent(this, NewPostActivity.class);
+                intent.putExtra("reply_to", id);
+                startActivity(intent);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         });
         Intent intent = getIntent();
         try {

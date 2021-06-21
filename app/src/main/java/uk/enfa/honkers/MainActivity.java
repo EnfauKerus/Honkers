@@ -1,18 +1,22 @@
 package uk.enfa.honkers;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -63,6 +67,25 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         switch(id){
+            case R.id.gotouser:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Enter username");
+
+                final EditText input = new EditText(this);
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+
+                builder.setPositiveButton("OK", (DialogInterface dialog, int which) -> {
+                    Intent intent = new Intent(this, ProfileActivity.class);
+                    intent.putExtra("username", input.getText().toString());
+                    startActivity(intent);
+                });
+
+                builder.setNegativeButton("Cancel", (DialogInterface dialog, int which) -> {
+                    dialog.cancel();
+                });
+                builder.show();
+                break;
             case R.id.settings:
                 Intent settings = new Intent(this, UserSettingsActivity.class);
                 startActivity(settings);
@@ -72,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.remove("token");
                 editor.remove("username");
                 editor.remove("nickname");
+                editor.apply();
                 finish();
                 break;
         }

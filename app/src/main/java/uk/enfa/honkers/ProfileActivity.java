@@ -110,6 +110,11 @@ public class ProfileActivity extends AppCompatActivity {
         updateTimeline();
         super.onResume();
     }
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
 
     void checkFollow(){
         String jwt = getSharedPreferences("uk.enfa.honkers", MODE_PRIVATE).getString("token", "null");
@@ -161,11 +166,12 @@ public class ProfileActivity extends AppCompatActivity {
 
     void onErrorResponse(VolleyError error){
 
-        toast("Error: "+error.networkResponse.statusCode);
+        if(error.networkResponse!=null) toast("Error: "+error.networkResponse.statusCode);
         if(error instanceof AuthFailureError){
             Intent login = new Intent(this, LoginActivity.class);
             startActivity(login);
         }
+        finish();
     }
 
     void toast(String msg){
